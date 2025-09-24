@@ -8,12 +8,12 @@ mount_filesystem() {
     create_mountpoint=$3
 
     ## BODY
-    print_heading3 "Mount ${filesystem}"
+    print_heading3 "Mount ${filesystem} on ${mountpoint}"
     if $create_mountpoint; then
-        print_item "Create mount point ${mountpoint} and mount ${filesystem}"
+        print_item "Create mount point ${mountpoint} and mount ${filesystem} on ${mountpoint}"
         mount --mkdir $filesytem $mountpoint
     else
-        print_item "Mount ${filesystem}"
+        print_item "Mount ${filesystem} on ${mountpoint}"
         mount $filesystem $mountpoint
     fi
 }

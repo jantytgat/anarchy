@@ -10,17 +10,17 @@ print_heading1() {
 }
 
 print_heading2() {
-    print_gum_heading "#F5B027" "$1"
+    print_gum_heading "#F5B027" "\t$1"
     sleep 1
 }
 
 print_heading3() {
-    print_gum_heading "#27F5B0" "$1"
+    print_gum_heading "#27F5B0" "\t\t$1"
     sleep 1
 }
 
 print_item() {
-    print_gum_heading "#276CF5" "$1"
+    print_gum_heading "#276CF5" "\t\t\t-$1"
     sleep 1
 }
 
