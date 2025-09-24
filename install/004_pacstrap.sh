@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 install_base_system() {
+    ## VARIABLES
     chroot_mountpoint=$1
+
+    ## BODY
+    print_heading3 "Installing packages to ${chroot_mountpoint}"
+    print_item "Running pacstrap"
     pacstrap -K $chroot_mountpoint \
     base \
     ca-certificates \
