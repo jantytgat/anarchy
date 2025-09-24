@@ -56,7 +56,7 @@ has_data_disk() {
 is_uefi_boot_mode() {
     # Check boot mode
     boot_mode=$(cat /sys/firmware/efi/fw_platform_size)
-    if [[ boot_mode = 64 ]]; then
+    if [[ "$boot_mode" = 64 ]]; then
         return 0
     else
         return 1
