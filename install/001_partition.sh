@@ -6,7 +6,7 @@ create_boot_filesystem() {
     disk=$1
 
     ## BODY
-    print_heading3 "Create filesystem on ${disk}"
+    print_heading3 "Create boot filesystem on ${disk}"
     # Create filesystem for EFI/Boot
     print_item "Formatting filesystem for boot partition"
     mkfs.fat -F 32 -n EFI $disk'1'

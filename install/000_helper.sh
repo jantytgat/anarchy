@@ -15,12 +15,12 @@ print_heading2() {
 }
 
 print_heading3() {
-    print_gum_heading "27F5B0" "$1"
+    print_gum_heading "#27F5B0" "$1"
     sleep 3
 }
 
 print_item() {
-    print_gum_heading "276CF5" "$1"
+    print_gum_heading "#276CF5" "$1"
     sleep 1
 }
 
