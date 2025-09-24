@@ -65,7 +65,7 @@ EOF
     else
         print_item "Using custom URL ${custom_url}"
         cat > /etc/pacman.d/mirrorlist << EOF
-Server = $custom_url\$repo/os/\$arch
+Server = ${custom_url}\$repo/os/\$arch
 EOF
     fi
 }
