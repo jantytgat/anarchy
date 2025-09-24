@@ -5,22 +5,22 @@ print_gum_heading() {
 }
 
 print_heading1() {
-    print_gum_heading "#00FF00" "$1"
+    print_gum_heading "#F54927" "$1"
     sleep 5
 }
 
 print_heading2() {
-    print_gum_heading "#FFFF00" "$1"
+    print_gum_heading "#F5B027" "$1"
     sleep 4
 }
 
 print_heading3() {
-    print_gum_heading "00FFFF" "$1"
+    print_gum_heading "27F5B0" "$1"
     sleep 3
 }
 
 print_item() {
-    print_gum_heading "FF00FF" "$1"
+    print_gum_heading "276CF5" "$1"
     sleep 1
 }
 
@@ -30,7 +30,7 @@ print_start() {
     --align center \
     --border double \
     --border-foreground "#0082c7" \
-    --foreground "#0082c7" \
+    --foreground "#F5276C" \
     --margin "1 2" \
     --padding "2 4" \
     --width 50 \
