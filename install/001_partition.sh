@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
 source 000_helper.sh
 
+copy_luks_keyfile() {
+    ## VARIABLES
+    local keyfile=$1
+
+    ## BODY
+    print_heading3 "Copy encryption key for data partition"
+    print_item "Create target path /mnt${keyfile}"
+    mkdir -p $(dirname "/mnt${keyfile}")
+
+    print_item "Copy ${keyfile} to /mnt${keyfile}"
+    cp $keyfile /mnt/$keyfile
+}
+
 create_boot_filesystem() {
     ## VARIABLES
-    disk=$1
+    local disk=$1
 
     ## BODY
     print_heading3 "Create boot filesystem on ${disk}"
@@ -14,10 +27,11 @@ create_boot_filesystem() {
 
 create_luks_data_filesystem() {
     ## VARIABLES
-    data_partition=$1
-    data_fstype=$2
-    data_name=data
-    data_mapper=/dev/mapper/$data_name
+    local data_partition=$1
+    local data_fstype=$2
+    local data_name=data
+    local data_mapper=/dev/mapper/$data_name
+    
     data_keyfile=/etc/cryptsetup-keys.d/data.key
 
     ## BODY
@@ -41,12 +55,12 @@ create_luks_data_filesystem() {
 
 create_luks_root_filesystem() {
     ## VARIABLES
-    root_passphrase=$1
-    root_partition=$2
-    root_fstype=$3
-    root_name=root
-    root_mapper=/dev/mapper/$root_name
-    root_keyfile=/root/key.txt
+    local root_passphrase=$1
+    local root_partition=$2
+    local root_fstype=$3
+    local root_name=root
+    local root_mapper=/dev/mapper/$root_name
+    local root_keyfile=/root/key.txt
 
     ## BODY
     print_heading3 "Create encrypted filesystem on ${root_partition}"
@@ -69,7 +83,7 @@ create_luks_root_filesystem() {
 }
 
 has_data_disk() {
-    disk=$1
+    local disk=$1
     if test -f $disk; then
         return 0
     else
@@ -79,7 +93,7 @@ has_data_disk() {
 
 is_uefi_boot_mode() {
     # Check boot mode
-    boot_mode=$(cat /sys/firmware/efi/fw_platform_size)
+    local boot_mode=$(cat /sys/firmware/efi/fw_platform_size)
     if [[ "$boot_mode" = 64 ]]; then
         return 0
     else
@@ -88,29 +102,32 @@ is_uefi_boot_mode() {
 }
 
 partition_primary_disk() {
-    disk=$1
+    local disk=$1
 
-    # echo "Wiping current filesystem on $disk"
+    print_heading3 "Partitioning $disk"
+    print_item "Wiping current filesystem on $disk"
     wipefs -a $disk
 
-    # echo "Partitioning $disk"
+    print_item "Create gpt filesystem layout"
     parted -s $disk mklabel gpt
+    print_item "Create EFI-boot partition"
     parted -s --align=optimal $disk mkpart EFI fat32 1MiB 1025MiB
+    print_item "Set partition to bootable"
     parted -s $disk set 1 esp on
+    print_item "Create root partition"
     parted -s --align=optimal $disk mkpart "root" ext4 1025MiB 100%
-    #parted -s $disk print
-    #sleep 5
 }
 
 partition_data_disk() {
-    disk=$1
+    local disk=$1
 
-    #echo "Wiping current filesystem on $disk"
+    print_heading3 "Partitioning $disk"
+    print_item "Wiping current filesystem on $disk"
     wipefs -a $disk
-    # echo "Partitioning $disk"
+    
+    print_item "Create gpt filesystem layout"
     parted -s $disk mklabel gpt
+    print_item "Create data partition"
     parted -s $disk unit mib mkpart primary 0% 100%
-    #parted -s $disk print
-    #sleep 5
 }
 

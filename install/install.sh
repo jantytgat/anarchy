@@ -6,6 +6,11 @@ source 003_configure_pacman.sh
 source 004_pacstrap.sh
 
 main() {
+    ### INPUT
+    # $1 = root passphrase
+    # $2 = custom pacman url
+    # $3 = custom url is pacoloco proxy (true | false)
+
     ### VARIABLES
     primary_disk=/dev/sda
     data_disk=/dev/sdb
@@ -25,8 +30,10 @@ main() {
     data_mapper=/dev/mapper/data
     data_mountpoint=/mnt/data
     data_mountpoint_create=true
+    data_keyfile=
 
     custom_url=$2
+    is_pacoloco=$3
 
     ### MAIN BODY    
     print_start
@@ -36,6 +43,13 @@ main() {
         exit 1
     fi
 
+    if [[ "$root_passphrase" = "" ]]; then
+        echo "Root passphrase is empty"
+    fi
+
+    if [[ "$is_pacoloco" = "" ]]; then
+        is_pacoloco=false
+    fi
 
     print_heading1 "Setting up environment"
     # List available keymaps
@@ -52,26 +66,30 @@ main() {
     create_boot_filesystem $primary_disk
     create_luks_root_filesystem $root_passphrase $root_partition "ext4"
 
+    print_heading2 "Mount primary filesystems"
+    # First mount root partition
+    mount_filesystem $root_mapper $root_mountpoint $root_mountpoint_create
+    mount_filesystem $boot_partition $boot_mountpoint $boot_mountpoint_create
+
     if has_data_disk $data_disk; then
         print_heading2 "Partitioning data disk ${data_disk}"
         data_disk_found=true
         partition_data_disk $data_disk
         create_luks_data_filesystem $data_partition "xfs"
-    fi
 
-    print_heading2 "Mount filesystems"
-    # First mount root partition
-    mount_filesystem $root_mapper $root_mountpoint $root_mountpoint_create
-    mount_filesystem $boot_partition $boot_mountpoint $boot_mountpoint_create
-
-    if $data_disk_found; then
+        print_heading2 "Mount data filesystem"
         mount_filesystem $data_mapper $data_mountpoint $data_mountpoint_create
+        copy_luks_keyfile $data_keyfile
     fi
 
     print_heading1 "Install base system"
     print_heading2 "Configuring installer"
     if [ "$custom_url" = "" ]; then
         configure_pacman
+    elif $is_pacoloco; then
+        if [[ "$custom_url" == */repo/archlinux ]]; then
+            configure_pacman "${custom_url}/repo/archlinux"
+        fi
     else
         configure_pacman $custom_url
     fi
