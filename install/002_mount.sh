@@ -9,6 +9,7 @@ mount_filesystem() {
         mount --mkdir $filesytem $mountpoint
     else
         mount $filesystem $mountpoint
+    fi
 }
 
 generate_fstab() {
