@@ -6,17 +6,17 @@ print_gum_heading() {
 
 print_heading1() {
     print_gum_heading "#F54927" "$1"
-    sleep 5
+    sleep 1
 }
 
 print_heading2() {
     print_gum_heading "#F5B027" "$1"
-    sleep 4
+    sleep 1
 }
 
 print_heading3() {
     print_gum_heading "#27F5B0" "$1"
-    sleep 3
+    sleep 1
 }
 
 print_item() {
