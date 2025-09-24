@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source 000_helper.sh
 
 mount_filesystem() {
     ## VARIABLES

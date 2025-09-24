@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source 000_helper.sh
 source 001_partition.sh
 source 002_mount.sh
 source 003_configure_pacman.sh

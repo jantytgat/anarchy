@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source 000_helper.sh
 
 create_boot_filesystem() {
     ## VARIABLES
