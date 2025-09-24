@@ -20,7 +20,7 @@ print_heading3() {
 }
 
 print_item() {
-    print_gum_heading "#276CF5" "      -$1"
+    print_gum_heading "#276CF5" "      - $1"
     sleep 1
 }
 
