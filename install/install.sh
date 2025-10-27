@@ -120,6 +120,8 @@ main() {
     fi
 
     configure_systemd_boot $root_partition
+    configure_dropbear
+    configure_network
 }
 
 main "$@"
