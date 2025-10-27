@@ -7,6 +7,7 @@ source 004_pacstrap.sh
 
 main() {
     ### INPUT
+    
     # $1 = root passphrase
     # $2 = custom pacman url
     # $3 = custom url is pacoloco proxy (true | false)

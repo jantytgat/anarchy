@@ -16,8 +16,6 @@ mount_filesystem() {
         print_item "Mount ${filesystem} on ${mountpoint}"
         mount $filesystem $mountpoint
     fi
-
-    read -p "Press enter to continue"
 }
 
 generate_fstab() {
@@ -28,6 +26,4 @@ generate_fstab() {
     print_heading3 "Generating fstab-file for new system"
     print_item "Using ${root_mountpoint} as root for new system"
     genfstab -U $root_mountpoint >> $root_mountpoint/etc/fstab
-
-    read -p "Press enter to continue"
 }

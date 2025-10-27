@@ -68,6 +68,4 @@ EOF
 Server = ${custom_url}\$repo/os/\$arch
 EOF
     fi
-
-    read -p "Press enter to continue"
 }
