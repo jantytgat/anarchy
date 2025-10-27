@@ -7,12 +7,14 @@ source 004_pacstrap.sh
 
 main() {
     ### INPUT
-    
-    # $1 = root passphrase
-    # $2 = custom pacman url
-    # $3 = custom url is pacoloco proxy (true | false)
+
+    # $1 = hostname
+    # $2 = root passphrase
+    # $3 = custom pacman url
+    # $4 = custom url is pacoloco proxy (true | false)
 
     ### VARIABLES
+    hostname=$1
     primary_disk=/dev/sda
     data_disk=/dev/sdb
     
@@ -20,7 +22,7 @@ main() {
     boot_mountpoint=/mnt/boot
     boot_mountpoint_create=true
 
-    root_passphrase=$1
+    root_passphrase=$2
     root_partition=/dev/sda2
     root_mapper=/dev/mapper/root
     root_mountpoint=/mnt
@@ -33,8 +35,8 @@ main() {
     data_mountpoint_create=true
     data_keyfile=
 
-    custom_url=$2
-    is_pacoloco=$3
+    custom_url=$3
+    is_pacoloco=$4
 
     ### MAIN BODY    
     print_start
@@ -100,6 +102,22 @@ main() {
 
     print_heading2 "Prepare system mounts"
     generate_fstab $root_mountpoint
+
+    print_heading1 "Configuring target environment"
+    print_heading2 "Configuring SSH"
+    copy_ssh_hostkeys
+
+    print_heading2 "Create files on chroot filesystem"
+    set_timezone
+    set_locale
+    set_hostname $hostname
+    set_authorized_keys_for_root
+
+    if has_data_disk $data_disk; then
+        configure_crypttab $data_partition $data_keyfile
+    fi
+
+    configure_systemd_boot $root_partition
 }
 
 main "$@"

@@ -131,3 +131,4 @@ partition_data_disk() {
     parted -s $disk unit mib mkpart primary 0% 100%
 }
 
+
