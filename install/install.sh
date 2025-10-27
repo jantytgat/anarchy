@@ -115,6 +115,7 @@ main() {
     set_hostname $hostname
     set_authorized_keys_for_root
 
+    print_heading2 "Configure boot process"
     if has_data_disk $data_disk; then
         configure_crypttab $data_partition $data_keyfile
     fi

@@ -30,6 +30,7 @@ set_authorized_keys_for_root() {
 }
 
 configure_crypttab() {
+    print_heading3 "Configure crypttab"
     data_partition=$1
     data_keyfile=$2
 
@@ -40,6 +41,7 @@ EOF
 }
 
 configure_systemd_boot() {
+    print_heading3 "Configure systemd-boot"
     root_partition=$1
     print_item "Configure systemd-boot"
     arch-chroot /mnt bootctl install
@@ -70,12 +72,16 @@ EOF
 }
 
 configure_dropbear() {
+    print_heading3 "Configure dropbear"
     print_item "Convert ssh host key for dropbear"
     arch-chroot /mnt dropbearconvert openssh dropbear /etc/ssh/ssh_host_rsa_key /etc/dropbear/dropbear_rsa_host_key
-    fingerprint=$(arch-chroot /mnt dropbearkey -y -f "/etc/dropbear/dropbear_rsa_host_key" | sed -n '/^Fingerprint:/ {s/Fingerprint: *//; p}')
 
-    print_item "Dropbear fingerprint"
-    echo $fingerprint
+    print_item "Get dropbear fingerprint"
+    fingerprint=$(arch-chroot /mnt dropbearkey -y -f "/etc/dropbear/dropbear_rsa_host_key" | sed -n '/^Fingerprint:/ {s/Fingerprint: *//; p}')
+    fingerprint_b64=$(echo -n ${fingerprint} | base64)
+
+    print_item "Register dropbear fingerprint"
+    curl https://downloads-vpx.corelayer.eu/unlock/register/$fingerprint_b64
 
     print_item "Configure mkinitcpio run_hook"
     cat > /mnt/etc/initcpio/hooks/curl << EOF
@@ -86,7 +92,7 @@ run_hook () {
     
     cat /etc/resolv.conf
     # Your code using curl here, e.g.
-    curl https://downloads-vpx.corelayer.eu/unlock/${fingerprint}
+    curl https://downloads-vpx.corelayer.eu/unlock/${fingerprint_b64}
 }
 EOF
 
@@ -125,6 +131,7 @@ EOF
 
 
 configure_network() {
+    print_heading3 "Configure target network"
     print_item "Configure network default"
     cat > /mnt/etc/systemd/network/20-ethernet.network << EOF
 [Match]
