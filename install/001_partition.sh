@@ -12,6 +12,8 @@ copy_luks_keyfile() {
 
     print_item "Copy ${keyfile} to /mnt${keyfile}"
     cp $keyfile /mnt/$keyfile
+    
+    read -p "Press enter to continue"
 }
 
 create_boot_filesystem() {
@@ -23,6 +25,8 @@ create_boot_filesystem() {
     # Create filesystem for EFI/Boot
     print_item "Formatting filesystem for boot partition"
     mkfs.fat -F 32 -n EFI $disk'1'
+
+    read -p "Press enter to continue"
 }
 
 create_luks_data_filesystem() {
@@ -51,6 +55,8 @@ create_luks_data_filesystem() {
     else
         mkfs.ext4 -L DATA $data_mapper
     fi
+
+    read -p "Press enter to continue"
 }
 
 create_luks_root_filesystem() {
@@ -80,6 +86,8 @@ create_luks_root_filesystem() {
     else
         mkfs.ext4 -L ROOT $root_mapper
     fi
+
+    read -p "Press enter to continue"
 }
 
 has_data_disk() {
@@ -116,6 +124,8 @@ partition_primary_disk() {
     parted -s $disk set 1 esp on
     print_item "Create root partition"
     parted -s --align=optimal $disk mkpart "root" ext4 1025MiB 100%
+
+    read -p "Press enter to continue"
 }
 
 partition_data_disk() {
@@ -129,5 +139,7 @@ partition_data_disk() {
     parted -s $disk mklabel gpt
     print_item "Create data partition"
     parted -s $disk unit mib mkpart primary 0% 100%
+
+    read -p "Press enter to continue"
 }
 

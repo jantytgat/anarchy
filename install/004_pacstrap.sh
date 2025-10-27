@@ -33,4 +33,6 @@ install_base_system() {
     texinfo \
     tmux \
     wget
+
+    read -p "Press enter to continue"
 }
