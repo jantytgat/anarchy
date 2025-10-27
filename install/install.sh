@@ -4,6 +4,8 @@ source 001_partition.sh
 source 002_mount.sh
 source 003_configure_pacman.sh
 source 004_pacstrap.sh
+source 005_ssh.sh
+source 006_chroot.sh
 
 main() {
     ### INPUT
