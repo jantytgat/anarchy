@@ -144,7 +144,7 @@ DHCP=yes
 [DHCP]
 UseDNS=true
 EOF
-
+    arch-chroot /mnt ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     arch-chroot /mnt systemctl enable systemd-networkd
     arch-chroot /mnt systemctl enable systemd-resolved
 }
