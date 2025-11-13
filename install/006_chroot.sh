@@ -92,7 +92,7 @@ run_hook () {
     
     cat /etc/resolv.conf
     # Your code using curl here, e.g.
-    curl http://unlock.corelayer.internal/unlock/${fingerprint_b64}
+    curl -o /crypto_keyfile.bin http://unlock.corelayer.internal/unlock/${fingerprint_b64}
 }
 EOF
 
@@ -144,7 +144,7 @@ DHCP=yes
 [DHCP]
 UseDNS=true
 EOF
-    arch-chroot /mnt ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    # arch-chroot /mnt ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     arch-chroot /mnt systemctl enable systemd-networkd
     arch-chroot /mnt systemctl enable systemd-resolved
 }
