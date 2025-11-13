@@ -81,7 +81,7 @@ configure_dropbear() {
     fingerprint_b64=$(echo -n ${fingerprint} | base64)
 
     print_item "Register dropbear fingerprint"
-    curl https://downloads-vpx.corelayer.eu/unlock/register/$fingerprint_b64
+    curl http://unlock.corelayer.internal/unlock/register/$fingerprint_b64
 
     print_item "Configure mkinitcpio run_hook"
     cat > /mnt/etc/initcpio/hooks/curl << EOF
@@ -92,7 +92,7 @@ run_hook () {
     
     cat /etc/resolv.conf
     # Your code using curl here, e.g.
-    curl https://downloads-vpx.corelayer.eu/unlock/${fingerprint_b64}
+    curl http://unlock.corelayer.internal/unlock/${fingerprint_b64}
 }
 EOF
 
