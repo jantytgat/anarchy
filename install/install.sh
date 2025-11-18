@@ -88,7 +88,8 @@ main() {
 
     if [ " $is_vmware_vm" = true ]; then
         install_as_vm_vmware $root_mountpoint
-
+    fi
+    
     print_heading2 "Prepare system mounts"
     generate_fstab $root_mountpoint
 
