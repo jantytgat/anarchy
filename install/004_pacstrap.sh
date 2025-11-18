@@ -6,7 +6,6 @@ install_base_system() {
     chroot_mountpoint=$1
 
     ## BODY
-    print_heading3 "Installing packages to ${chroot_mountpoint}"
     print_item "Running pacstrap"
     pacstrap -K $chroot_mountpoint \
     base \
@@ -28,9 +27,28 @@ install_base_system() {
     mkinitcpio-utils \
     openssh \
     nano \
-    qemu-guest-agent \
     sudo \
     texinfo \
     tmux \
     wget
+}
+
+install_as_vm_qemu() {
+    ## VARIABLES
+    chroot_mountpoint=$1
+
+    ## BODY
+    print_item "Running pacstrap for QEMU virtual machine"
+    pacstrap -K $chroot_mountpoint \
+    qemu-guest-agent
+}
+
+install_as_vm_vmware() {
+    ## VARIABLES
+    chroot_mountpoint=$1
+
+    ## BODY
+    print_item "Running pacstrap for VMware virtual machine"
+    pacstrap -K $chroot_mountpoint \
+    open-vm-tools
 }

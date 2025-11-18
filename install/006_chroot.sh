@@ -130,8 +130,8 @@ EOF
 }
 
 
-configure_network() {
-    print_heading3 "Configure target network"
+configure_network_dhcp() {
+    print_heading3 "Configure target network using DHCP"
     print_item "Configure network default"
     cat > /mnt/etc/systemd/network/20-ethernet.network << EOF
 [Match]
@@ -147,4 +147,15 @@ EOF
     # arch-chroot /mnt ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     arch-chroot /mnt systemctl enable systemd-networkd
     arch-chroot /mnt systemctl enable systemd-resolved
+}
+
+configure_root_user() {
+    ## VARIABLES
+    root_password=$1
+
+    ## BODY
+    print_heading3 "Configure root user"
+    print_item "Setting root password"
+
+    echo $root_password | arch-chroot /mnt passwd root --stdin
 }

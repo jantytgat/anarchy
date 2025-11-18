@@ -12,14 +12,12 @@ source 006_chroot.sh
 ### Set variables
 source environment.sh
 
-### Run main function
-main "$@"
-
 main() {
     hostname=$1
-    root_passphrase=$2
-    custom_url=$3
-    is_pacoloco=$4
+    root_password=$2
+    root_passphrase=$3
+    custom_url=$4
+    is_pacoloco=$5
 
     ### MAIN BODY    
     print_start
@@ -81,7 +79,15 @@ main() {
     fi
 
     print_heading2 "Installing packages"
+    print_heading3 "Installing packages to ${chroot_mountpoint}"
     install_base_system $root_mountpoint
+
+    if [ "$is_qemu_vm" = true ]; then
+        install_as_vm_qemu $root_mountpoint
+    fi
+
+    if [ " $is_vmware_vm" = true ]; then
+        install_as_vm_vmware $root_mountpoint
 
     print_heading2 "Prepare system mounts"
     generate_fstab $root_mountpoint
@@ -103,5 +109,10 @@ main() {
 
     configure_systemd_boot $root_partition
     configure_dropbear
-    configure_network
+    configure_network_dhcp
+
+    configure_root_user $root_password
 }
+
+### Run main function
+main "$@"
