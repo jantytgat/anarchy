@@ -77,11 +77,22 @@ configure_dropbear() {
     arch-chroot /mnt dropbearconvert openssh dropbear /etc/ssh/ssh_host_rsa_key /etc/dropbear/dropbear_rsa_host_key
 
     print_item "Get dropbear fingerprint"
-    fingerprint=$(arch-chroot /mnt dropbearkey -y -f "/etc/dropbear/dropbear_rsa_host_key" | sed -n '/^Fingerprint:/ {s/Fingerprint: *//; p}')
+    public_key=$(arch-chroot /mnt dropbearkey -y -f "/etc/dropbear/dropbear_rsa_host_key")
+    fingerprint=$(echo -n ${public_key} | sed -n '/^Fingerprint:/ {s/Fingerprint: *//; p}')
     fingerprint_b64=$(echo -n ${fingerprint} | base64)
 
-    print_item "Register dropbear fingerprint"
-    curl http://unlock.corelayer.internal/unlock/register/$fingerprint_b64
+    print_item "Register machine"
+    cat > /data.json << EOF
+{
+    "organization": "${registry_organization}",
+    "environment": "${registry_environment}",
+    "location": "${registry_location}",
+    "hostname": "${registry_hostname}",
+    "fingerprint": "${fingerprint}",
+    "public_key": "${public_key}",
+}
+EOF
+    curl -X POST -H "Content-Type: application/json" -d @data.json ${registry_base_url}/machines/
 
     print_item "Configure mkinitcpio run_hook"
     cat > /mnt/etc/initcpio/hooks/curl << EOF
@@ -91,8 +102,16 @@ run_hook () {
     echo nameserver \$IPV4DNS0 > /etc/resolv.conf
     
     cat /etc/resolv.conf
-    # Your code using curl here, e.g.
-    curl -o /crypto_keyfile.bin http://unlock.corelayer.internal/unlock/${fingerprint_b64}
+
+    # Retrieve key from Unlock-service
+    curl -o /crypto_keyfile.bin \
+        -X GET \
+        -H "X-REGISTRY-ORGANIZATION: ${registry_organization}" \
+        -H "X-REGISTRY-ENVIRONMENT: ${registry_environment}" \
+        -H "X-REGISTRY-LOCATION: ${registry_location}" \
+        -H "X-REGISTRY-PUBLICKEY: ${public_key}"
+        --max-time 5 \
+         http://unlock.corelayer.internal/machines/${guid}/luks/unlock
 }
 EOF
 
